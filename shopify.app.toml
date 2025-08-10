@@ -3,11 +3,12 @@
 client_id = "b689f925851a06bac139eef1e2dc7018"
 name = "wishlist-app"
 handle = "wishlist-app-417"
-application_url = "https://example.com/"
+application_url = "https://localhost:3458"
 embedded = true
 
 [build]
 include_config_on_deploy = true
+automatically_update_urls_on_dev = true
 
 [webhooks]
 api_version = "2025-07"
@@ -17,7 +18,7 @@ api_version = "2025-07"
 scopes = "write_products"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = ["https://localhost:3458/auth/callback", "https://localhost:3458/auth/shopify/callback", "https://localhost:3458/api/auth/callback"]
 
 [pos]
 embedded = false

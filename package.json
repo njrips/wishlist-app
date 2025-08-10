@@ -11,7 +11,11 @@
     "generate": "shopify app generate",
     "deploy": "shopify app deploy"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@prisma/client": "^6.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.13.0"
+  },
   "author": "njrips",
   "private": true,
   "workspaces": [

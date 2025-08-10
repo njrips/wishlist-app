@@ -1,0 +1,71 @@
+// Prisma schema for Shopify Wishlist App (PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id            String     @id @default(cuid())
+  domain        String     @unique
+  accessToken   String
+  installedAt   DateTime   @default(now())
+  customers     Customer[]
+  wishlists     Wishlist[]
+  events        Event[]
+}
+
+model Customer {
+  id               String    @id @default(cuid())
+  shop             Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId           String
+  shopCustomerId   BigInt
+  email            String?
+  createdAt        DateTime  @default(now())
+  wishlists        Wishlist[]
+  events           Event[]
+
+  @@index([shopId, shopCustomerId])
+}
+
+model Wishlist {
+  id          String         @id @default(cuid())
+  shop        Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId      String
+  customer    Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId  String?
+  shareUUID   String         @unique
+  createdAt   DateTime       @default(now())
+  items       WishlistItem[]
+
+  @@unique([shopId, customerId])
+}
+
+model WishlistItem {
+  id          String    @id @default(cuid())
+  wishlist    Wishlist  @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  wishlistId  String
+  productId   BigInt
+  variantId   BigInt
+  handle      String
+  createdAt   DateTime  @default(now())
+
+  @@index([wishlistId])
+  @@index([productId, variantId])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId      String
+  customer    Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId  String?
+  type        String    // add | remove | share | add_all_to_cart
+  payload     Json
+  createdAt   DateTime  @default(now())
+
+  @@index([shopId, customerId, type])
+}
